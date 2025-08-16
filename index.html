@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Quiz Interactif - Les Rétrocontrôles</title>
+    <meta name="description" content="Jeu éducatif interactif pour apprendre les rétrocontrôles dans l'organisme humain">
+    <meta name="keywords" content="rétrocontrôles, biologie, homéostasie, cybernétique, quiz">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .game-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4f46e5, #06b6d4, #10b981);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .icon {
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            background: linear-gradient(135deg, #1e293b, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .score {
+            font-size: 28px;
+            font-weight: 800;
+            color: #059669;
+            text-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+        }
+
+        .streak {
+            font-size: 16px;
+            color: #ea580c;
+            font-weight: 600;
+            margin-top: 4px;
+            padding: 4px 8px;
+            background: #fed7aa;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .progress-section {
+            margin-bottom: 32px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4f46e5, #06b6d4);
+            width: 12.5%;
+            transition: width 0.5s ease;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.4);
+        }
+
+        .question-section {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+        }
+
+        .question-section h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .option-button {
+            width: 100%;
+            padding: 20px;
+            text-align: left;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 17px;
+            color: #334155;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .option-button:hover::before {
+            left: 100%;
+        }
+
+        .option-button:hover {
+            border-color: #94a3b8;
+            background: #f8fafc;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        .option-button.selected {
+            border-color: #4f46e5;
+            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            color: #3730a3;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.2);
+        }
+
+        .option-button.correct {
+            border-color: #10b981;
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            color: #065f46;
+            animation: correctPulse 0.6s ease-in-out;
+        }
+
+        .option-button.incorrect {
+            border-color: #ef4444;
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            color: #991b1b;
+            animation: incorrectShake 0.6s ease-in-out;
+        }
+
+        .option-button.disabled {
+            border-color: #e2e8f0;
+            background: #f8fafc;
+            color: #94a3b8;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        .explanation {
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .explanation.correct {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border: 2px solid #10b981;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
+        }
+
+        .explanation.incorrect {
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            border: 2px solid #ef4444;
+            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.2);
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .explanation.correct .result-header {
+            color: #065f46;
+        }
+
+        .explanation.incorrect .result-header {
+            color: #991b1b;
+        }
+
+        .explanation.correct #explanation-text {
+            color: #047857;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .explanation.incorrect #explanation-text {
+            color: #b91c1c;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .action-container {
+            text-align: center;
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
+        }
+
+        .action-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4);
+        }
+
+        .action-button:active {
+            transform: translateY(-1px);
+        }
+
+        .action-button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .action-button.next {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .action-button.next:hover {
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+        }
+
+        .final-screen {
+            text-align: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .trophy {
+            font-size: 80px;
+            margin-bottom: 24px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .final-screen h2 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #1e293b, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .final-screen p {
+            font-size: 20px;
+            color: #64748b;
+            margin-bottom: 24px;
+        }
+
+        .final-score-container {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+        }
+
+        .final-score {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            color: #10b981;
+            text-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .final-score.medium {
+            color: #f59e0b;
+            text-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+
+        .final-score.low {
+            color: #ef4444;
+            text-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        .final-percentage {
+            font-size: 20px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .final-message {
+            margin-bottom: 32px;
+            font-weight: 700;
+            font-size: 18px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .final-message.excellent {
+            color: #065f46;
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border: 2px solid #10b981;
+        }
+
+        .final-message.good {
+            color: #92400e;
+            background: linear-gradient(135deg, #fefbeb, #fef3c7);
+            border: 2px solid #f59e0b;
+        }
+
+        .final-message.needs-work {
+            color: #991b1b;
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            border: 2px solid #ef4444;
+        }
+
+        .restart-button {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
+        }
+
+        .restart-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+            
+            .game-container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .score {
+                font-size: 24px;
+            }
+            
+            .question-section h2 {
+                font-size: 20px;
+            }
+            
+            .option-button {
+                padding: 16px;
+                font-size: 16px;
+            }
+            
+            .final-screen h2 {
+                font-size: 28px;
+            }
+            
+            .final-score {
+                font-size: 36px;
+            }
+        }
+
+        /* Accessibilité */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Mode sombre */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            }
+            
+            .game-container {
+                background: #1e293b;
+                color: #f1f5f9;
+            }
+            
+            .question-section {
+                background: linear-gradient(135deg, #334155, #475569);
+                border-color: #475569;
+            }
+            
+            .option-button {
+                background: #334155;
+                color: #f1f5f9;
+                border-color: #475569;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container" class="game-container">
+        <div id="header" class="header">
+            <div class="header-left">
+                <div class="icon">🧠</div>
+                <h1>Rétrocontrôles</h1>
+            </div>
+            <div class="header-right">
+                <div id="score" class="score">0 pts</div>
+                <div id="streak" class="streak hidden"></div>
+            </div>
+        </div>
+
+        <div id="progress-section" class="progress-section">
+            <div class="progress-info">
+                <span id="question-counter">Question 1 sur 8</span>
+                <span id="level-title" class="level-badge">Définitions de base</span>
+            </div>
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+        </div>
+
+        <div id="question-section" class="question-section">
+            <h2 id="question-text">Qu'est-ce qu'un rétrocontrôle ?</h2>
+            <div id="options-container" class="options-container">
+                <!-- Options will be inserted here -->
+            </div>
+        </div>
+
+        <div id="explanation" class="explanation hidden">
+            <div class="result-header">
+                <span id="result-icon">✅</span>
+                <span id="result-text">Correct !</span>
+            </div>
+            <p id="explanation-text"></p>
+        </div>
+
+        <div class="action-container">
+            <button id="action-button" class="action-button" onclick="handleAction()">
+                Valider
+            </button>
+        </div>
+
+        <div id="final-screen" class="final-screen hidden">
+            <div class="trophy">🏆</div>
+            <h2>Félicitations ! 🎉</h2>
+            <p>Vous avez terminé le jeu sur les rétrocontrôles !</p>
+            <div class="final-score-container">
+                <div id="final-score" class="final-score">0/80 points</div>
+                <div id="final-percentage" class="final-percentage">Taux de réussite: 0%</div>
+            </div>
+            <div id="final-message" class="final-message"></div>
+            <button onclick="restartGame()" class="restart-button">
+                🔄 Rejouer
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                title: "Définitions de base",
+                question: "Qu'est-ce qu'un rétrocontrôle ?",
+                options: [
+                    "Un signal qui agit en retour pour contrôler un système",
+                    "Une hormone qui régule la croissance",
+                    "Un neurone qui transmet l'information",
+                    "Une enzyme qui catalyse une réaction"
+                ],
+                correct: 0,
+                explanation: "Un rétrocontrôle est un signal qui agit en retour pour contrôler un système, créant une boucle de rétroaction."
+            },
+            {
+                title: "Types de rétrocontrôles",
+                question: "Quelle est la différence principale entre rétrocontrôle positif et négatif ?",
+                options: [
+                    "Le positif accélère, le négatif ralentit",
+                    "Le positif amplifie (tendance), le négatif maintient constant (homéostasie)",
+                    "Le positif est bon, le négatif est mauvais",
+                    "Il n'y a pas de différence"
+                ],
+                correct: 1,
+                explanation: "Le rétrocontrôle positif est un régulateur en tendance (amplification), tandis que le négatif est un régulateur en constance (homéostat)."
+            },
+            {
+                title: "Homéostasie",
+                question: "Qui a défini le concept d'homéostasie ?",
+                options: [
+                    "Claude Bernard",
+                    "W.B. Cannon",
+                    "Norbert Wiener",
+                    "Darwin"
+                ],
+                correct: 1,
+                explanation: "W.B. Cannon (1871-1945) a défini l'homéostasie comme les processus physiologiques qui maintiennent les états stationnaires de l'organisme."
+            },
+            {
+                title: "Exemples moléculaires",
+                question: "Lequel de ces exemples représente un rétrocontrôle POSITIF au niveau moléculaire ?",
+                options: [
+                    "Glycolyse",
+                    "Autorécepteurs synaptiques",
+                    "MPF (M-phase Promoting Factor)",
+                    "Régulation de la glycémie"
+                ],
+                correct: 2,
+                explanation: "Le MPF (M-phase Promoting Factor) est un exemple de rétrocontrôle positif qui déclenche et amplifie la mitose."
+            },
+            {
+                title: "Classification par niveaux",
+                question: "À quel niveau se situe la régulation de la pression artérielle ?",
+                options: [
+                    "Niveau moléculaire",
+                    "Niveau cellulaire",
+                    "Niveau organe",
+                    "Niveau organisme"
+                ],
+                correct: 3,
+                explanation: "La régulation de la pression artérielle est un rétrocontrôle négatif au niveau de l'organisme entier."
+            },
+            {
+                title: "Exemples physiologiques",
+                question: "L'accouchement est un exemple de quel type de rétrocontrôle ?",
+                options: [
+                    "Rétrocontrôle négatif",
+                    "Rétrocontrôle positif",
+                    "Les deux à la fois",
+                    "Aucun des deux"
+                ],
+                correct: 1,
+                explanation: "L'accouchement est un exemple classique de rétrocontrôle positif : les contractions stimulent la libération d'ocytocine qui intensifie les contractions."
+            },
+            {
+                title: "Cybernétique",
+                question: "La cybernétique a été développée par :",
+                options: [
+                    "Claude Bernard",
+                    "W.B. Cannon",
+                    "Norbert Wiener",
+                    "Marie Curie"
+                ],
+                correct: 2,
+                explanation: "Norbert Wiener a développé la cybernétique en 1948, définie comme 'l'étude de la commande et de la communication chez l'animal et dans la machine'."
+            },
+            {
+                title: "Application pratique",
+                question: "Le réflexe myotatique est un exemple de :",
+                options: [
+                    "Rétrocontrôle positif au niveau cellulaire",
+                    "Rétrocontrôle négatif au niveau organisme",
+                    "Rétrocontrôle positif au niveau organisme",
+                    "Simple réflexe sans rétrocontrôle"
+                ],
+                correct: 1,
+                explanation: "Le réflexe myotatique d'étirement est un rétrocontrôle négatif au niveau de l'organisme qui maintient la posture et le tonus musculaire."
+            }
+        ];
+
+        let currentLevel = 0;
+        let score = 0;
+        let selectedAnswer = null;
+        let showResult = false;
+        let streak = 0;
+
+        function loadQuestion() {
+            const question = questions[currentLevel];
+            document.getElementById('question-counter').textContent = `Question ${currentLevel + 1} sur ${questions.length}`;
+            document.getElementById('level-title').textContent = question.title;
+            document.getElementById('progress-bar').style.width = `${((currentLevel + 1) / questions.length) * 100}%`;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-button';
+                button.textContent = option;
+                button.onclick = () => selectAnswer(index, button);
+                container.appendChild(button);
+            });
+            
+            document.getElementById('explanation').classList.add('hidden');
+            document.getElementById('action-button').textContent = 'Valider';
+            document.getElementById('action-button').className = 'action-button';
+        }
+
+        function selectAnswer(index, button) {
+            if (showResult) return;
+            
+            document.querySelectorAll('.option-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            button.classList.add('selected');
+            selectedAnswer = index;
+        }
+
+        function handleAction() {
+            if (!showResult && selectedAnswer !== null) {
+                showAnswer();
+            } else if (showResult) {
+                nextQuestion();
+            }
+        }
+
+        function showAnswer() {
+            showResult = true;
+            const question = questions[currentLevel];
+            const isCorrect = selectedAnswer === question.correct;
+            
+            document.querySelectorAll('.option-button').forEach((btn, index) => {
+                btn.classList.remove('selected');
+                if (index === question.correct) {
+                    btn.classList.add('correct');
+                    btn.innerHTML = btn.textContent + ' ✅';
+                } else if (selectedAnswer === index && index !== question.correct) {
+                    btn.classList.add('incorrect');
+                    btn.innerHTML = btn.textContent + ' ❌';
+                } else {
+                    btn.classList.add('disabled');
+                }
+            });
+            
+            const explanation = document.getElementById('explanation');
+            explanation.classList.remove('hidden');
+            
+            if (isCorrect) {
+                explanation.className = 'explanation correct';
+                document.getElementById('result-icon').textContent = '✅';
+                document.getElementById('result-text').textContent = 'Correct !';
+                score += 10;
+                streak += 1;
+            } else {
+                explanation.className = 'explanation incorrect';
+                document.getElementById('result-icon').textContent = '❌';
+                document.getElementById('result-text').textContent = 'Incorrect';
+                streak = 0;
+            }
+            
+            document.getElementById('explanation-text').textContent = question.explanation;
+            document.getElementById('score').textContent = score + ' pts';
+            
+            if (streak > 1) {
+                document.getElementById('streak').textContent = '🔥 Série: ' + streak;
+                document.getElementById('streak').classList.remove('hidden');
+            }
+            
+            document.getElementById('action-button').textContent = currentLevel < questions.length - 1 ? 'Question suivante' : 'Voir les résultats';
+            document.getElementById('action-button').className = 'action-button next';
+        }
+
+        function nextQuestion() {
+            if (currentLevel < questions.length - 1) {
+                currentLevel++;
+                selectedAnswer = null;
+                showResult = false;
+                loadQuestion();
+            } else {
+                showFinalScreen();
+            }
+        }
+
+        function showFinalScreen() {
+            document.getElementById('question-section').style.display = 'none';
+            document.getElementById('progress-section').style.display = 'none';
+            document.getElementById('explanation').style.display = 'none';
+            document.querySelector('.action-container').style.display = 'none';
+            document.getElementById('final-screen').classList.remove('hidden');
+            
+            const percentage = Math.round((score / (questions.length * 10)) * 100);
+            const finalScoreEl = document.getElementById('final-score');
+            finalScoreEl.textContent = `${score}/${questions.length * 10} points`;
+            document.getElementById('final-percentage').textContent = `Taux de réussite: ${percentage}%`;
+            
+            const messageEl = document.getElementById('final-message');
+            if (percentage >= 80) {
+                messageEl.textContent = '🏆 Excellent ! Vous maîtrisez parfaitement les rétrocontrôles !';
+                messageEl.className = 'final-message excellent';
+                finalScoreEl.className = 'final-score';
+            } else if (percentage >= 60) {
+                messageEl.textContent = '👍 Bien joué ! Quelques révisions et ce sera parfait !';
+                messageEl.className = 'final-message good';
+                finalScoreEl.className = 'final-score medium';
+            } else {
+                messageEl.textContent = '📚 Il faut encore réviser, mais c\'est un bon début !';
+                messageEl.className = 'final-message needs-work';
+                finalScoreEl.className = 'final-score low';
+            }
+        }
+
+        function restartGame() {
+            currentLevel = 0;
+            score = 0;
+            selectedAnswer = null;
+            showResult = false;
+            streak = 0;
+            
+            document.getElementById('question-section').style.display = 'block';
+            document.getElementById('progress-section').style.display = 'block';
+            document.querySelector('.action-container').style.display = 'block';
+            document.getElementById('final-screen').classList.add('hidden');
+            document.getElementById('streak').classList.add('hidden');
+            document.getElementById('score').textContent = '0 pts';
+            
+            loadQuestion();
+        }
+
+        // Initialize game
+        loadQuestion();
+
+        // Service Worker pour PWA (optionnel)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
